@@ -61,6 +61,12 @@ elseif(ENABLE_WOLFSSL)
   message(WARNING "libngtcp2_crypto_wolfssl library is disabled due to lack of good wolfSSL")
 endif()
 
+if(HAVE_HITLS)
+  add_subdirectory(hitls)
+elseif(ENABLE_HITLS)
+  message(WARNING "libngtcp2_crypto_hitls library is disabled due to lack of good openHiTLS")
+endif()
+
 if(HAVE_OSSL)
   add_subdirectory(ossl)
 elseif(ENABLE_OPENSSL)

@@ -485,3 +485,89 @@ if(LIBEV_FOUND AND HAVE_OSSL AND LIBNGHTTP3_FOUND)
 
   # TODO prevent client and example servers from being installed?
 endif()
+
+if(LIBEV_FOUND AND HAVE_HITLS AND LIBNGHTTP3_FOUND)
+  set(hitlsclient_SOURCES
+    client.cc
+    client_base.cc
+    http3_client_proto_codec.cc
+    debug.cc
+    util.cc
+    util_hitls.cc
+    shared.cc
+    tls_client_config_hitls.cc
+    tls_client_session_hitls.cc
+    tls_session_base_hitls.cc
+  )
+
+  set(hitlsserver_SOURCES
+    server.cc
+    server_base.cc
+    http3_server_proto_codec.cc
+    debug.cc
+    util.cc
+    util_hitls.cc
+    http.cc
+    shared.cc
+    siphash.cc
+    tls_server_config_hitls.cc
+    tls_server_session_hitls.cc
+    tls_session_base_hitls.cc
+  )
+
+  set(hitls_INCLUDE_DIRS
+    ${CMAKE_SOURCE_DIR}/lib/includes
+    ${CMAKE_BINARY_DIR}/lib/includes
+    ${CMAKE_SOURCE_DIR}/third-party
+    ${CMAKE_SOURCE_DIR}/third-party/urlparse
+    ${CMAKE_SOURCE_DIR}/crypto/includes
+
+    ${JEMALLOC_INCLUDE_DIRS}
+    ${HITLS_INCLUDE_DIRS}
+    ${LIBEV_INCLUDE_DIRS}
+    ${LIBNGHTTP3_INCLUDE_DIRS}
+  )
+
+  if(ENABLE_SHARED_LIB)
+    set(hitls_NGTCP2_TARGET ngtcp2)
+  else()
+    set(hitls_NGTCP2_TARGET ngtcp2_static)
+  endif()
+  if(ENABLE_STATIC_LIB)
+    set(hitls_CRYPTO_TARGET ngtcp2_crypto_hitls_static)
+  else()
+    set(hitls_CRYPTO_TARGET ngtcp2_crypto_hitls)
+  endif()
+
+  set(hitls_LIBS
+    ${hitls_CRYPTO_TARGET}
+    ${hitls_NGTCP2_TARGET}
+    ${JEMALLOC_LIBRARIES}
+    ${HITLS_LIBRARIES}
+    ${LIBEV_LIBRARIES}
+    ${LIBNGHTTP3_LIBRARIES}
+  )
+
+  add_executable(hitlsclient ${hitlsclient_SOURCES}
+    $<TARGET_OBJECTS:urlparse>
+  )
+  add_executable(hitlsserver ${hitlsserver_SOURCES}
+    $<TARGET_OBJECTS:urlparse>
+  )
+  set_target_properties(hitlsclient PROPERTIES
+    COMPILE_FLAGS "${WARNCXXFLAGS} -DWITH_EXAMPLE_HITLS -DWITH_EXAMPLE_HTTP3_PROTO_CODEC"
+    CXX_STANDARD 23
+    CXX_STANDARD_REQUIRED ON
+  )
+  set_target_properties(hitlsserver PROPERTIES
+    COMPILE_FLAGS "${WARNCXXFLAGS} -DWITH_EXAMPLE_HITLS -DWITH_EXAMPLE_HTTP3_PROTO_CODEC"
+    CXX_STANDARD 23
+    CXX_STANDARD_REQUIRED ON
+  )
+  target_include_directories(hitlsclient PUBLIC ${hitls_INCLUDE_DIRS})
+  target_include_directories(hitlsserver PUBLIC ${hitls_INCLUDE_DIRS})
+  target_link_libraries(hitlsclient ${hitls_LIBS})
+  target_link_libraries(hitlsserver ${hitls_LIBS})
+
+  # TODO prevent client and example servers from being installed?
+endif()

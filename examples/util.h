@@ -529,6 +529,20 @@ std::expected<void, Error>
 write_transport_params(const std::filesystem::path &path,
                        std::span<const uint8_t> data);
 
+// read_pem and write_pem are implemented by each examples TLS backend.
+std::expected<std::vector<uint8_t>, Error>
+read_pem(const std::filesystem::path &path, std::string_view name,
+         std::string_view type);
+std::expected<void, Error> write_pem(const std::filesystem::path &path,
+                                     std::string_view name,
+                                     std::string_view type,
+                                     std::span<const uint8_t> data);
+
+// ensure_hitls_init initializes the openHiTLS crypto EAL and TLS method
+// callbacks.  It is idempotent and must be called before creating any
+// openHiTLS TLS configuration.  Defined in util_hitls.cc.
+void ensure_hitls_init();
+
 const char *crypto_default_ciphers();
 
 const char *crypto_default_groups();

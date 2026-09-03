@@ -53,4 +53,8 @@
 #  include "tls_client_context_ossl.h"
 #endif // defined(WITH_EXAMPLE_OSSL)
 
+#ifdef WITH_EXAMPLE_HITLS
+#  include "tls_client_config_hitls.h"
+#endif // defined(WITH_EXAMPLE_HITLS)
+
 #endif // !defined(TLS_CLIENT_CONTEXT_H)

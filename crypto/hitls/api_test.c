@@ -1,7 +1,7 @@
 /*
  * ngtcp2
  *
- * Copyright (c) 2020 ngtcp2 contributors
+ * Copyright (c) 2026 ngtcp2 contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,39 +22,13 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef TLS_SERVER_CONTEXT_H
-#define TLS_SERVER_CONTEXT_H
+#include <ngtcp2/ngtcp2_crypto_hitls.h>
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif // defined(HAVE_CONFIG_H)
+int main(void) {
+  int (*configure_client)(HITLS_Config *) =
+    ngtcp2_crypto_hitls_configure_client_config;
+  int (*configure_server)(HITLS_Config *) =
+    ngtcp2_crypto_hitls_configure_server_config;
 
-#ifdef WITH_EXAMPLE_QUICTLS
-#  include "tls_server_context_quictls.h"
-#endif // defined(WITH_EXAMPLE_QUICTLS)
-
-#ifdef WITH_EXAMPLE_GNUTLS
-#  include "tls_server_context_gnutls.h"
-#endif // defined(WITH_EXAMPLE_GNUTLS)
-
-#ifdef WITH_EXAMPLE_BORINGSSL
-#  include "tls_server_context_boringssl.h"
-#endif // defined(WITH_EXAMPLE_BORINGSSL)
-
-#ifdef WITH_EXAMPLE_PICOTLS
-#  include "tls_server_context_picotls.h"
-#endif // defined(WITH_EXAMPLE_PICOTLS)
-
-#ifdef WITH_EXAMPLE_WOLFSSL
-#  include "tls_server_context_wolfssl.h"
-#endif // defined(WITH_EXAMPLE_WOLFSSL)
-
-#ifdef WITH_EXAMPLE_OSSL
-#  include "tls_server_context_ossl.h"
-#endif // defined(WITH_EXAMPLE_OSSL)
-
-#ifdef WITH_EXAMPLE_HITLS
-#  include "tls_server_config_hitls.h"
-#endif // defined(WITH_EXAMPLE_HITLS)
-
-#endif // !defined(TLS_SERVER_CONTEXT_H)
+  return !configure_client || !configure_server;
+}

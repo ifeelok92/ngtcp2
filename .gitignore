@@ -37,3 +37,8 @@ test-driver
 
 # idea settings
 .idea
+
+# local build directories
+build/
+build-hitls/
+build-hitls-ex/

@@ -1,7 +1,7 @@
 /*
  * ngtcp2
  *
- * Copyright (c) 2020 ngtcp2 contributors
+ * Copyright (c) 2026 ngtcp2 contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -19,42 +19,40 @@
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef TLS_SERVER_CONTEXT_H
-#define TLS_SERVER_CONTEXT_H
+#ifndef TLS_CLIENT_CONFIG_HITLS_H
+#define TLS_CLIENT_CONFIG_HITLS_H
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif // defined(HAVE_CONFIG_H)
 
-#ifdef WITH_EXAMPLE_QUICTLS
-#  include "tls_server_context_quictls.h"
-#endif // defined(WITH_EXAMPLE_QUICTLS)
+#include "hitls.h"
+#include "hitls_config.h"
+#include "hitls_error.h"
+#include "hitls_cert.h"
+#include "hitls_cert_type.h"
 
-#ifdef WITH_EXAMPLE_GNUTLS
-#  include "tls_server_context_gnutls.h"
-#endif // defined(WITH_EXAMPLE_GNUTLS)
+#include "shared.h"
 
-#ifdef WITH_EXAMPLE_BORINGSSL
-#  include "tls_server_context_boringssl.h"
-#endif // defined(WITH_EXAMPLE_BORINGSSL)
+using namespace ngtcp2;
 
-#ifdef WITH_EXAMPLE_PICOTLS
-#  include "tls_server_context_picotls.h"
-#endif // defined(WITH_EXAMPLE_PICOTLS)
+class TLSClientContext {
+public:
+  TLSClientContext() = default;
+  ~TLSClientContext();
 
-#ifdef WITH_EXAMPLE_WOLFSSL
-#  include "tls_server_context_wolfssl.h"
-#endif // defined(WITH_EXAMPLE_WOLFSSL)
+  std::expected<void, Error> init(const char *private_key_file,
+                                  const char *cert_file);
 
-#ifdef WITH_EXAMPLE_OSSL
-#  include "tls_server_context_ossl.h"
-#endif // defined(WITH_EXAMPLE_OSSL)
+  HITLS_Config *get_native_handle() const;
 
-#ifdef WITH_EXAMPLE_HITLS
-#  include "tls_server_config_hitls.h"
-#endif // defined(WITH_EXAMPLE_HITLS)
+  void enable_keylog();
 
-#endif // !defined(TLS_SERVER_CONTEXT_H)
+private:
+  HITLS_Config *ssl_ctx_{};
+};
+
+#endif // !defined(TLS_CLIENT_CONFIG_HITLS_H)

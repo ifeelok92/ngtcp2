@@ -1,7 +1,7 @@
 /*
  * ngtcp2
  *
- * Copyright (c) 2020 ngtcp2 contributors
+ * Copyright (c) 2026 ngtcp2 contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -19,42 +19,41 @@
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef TLS_SERVER_CONTEXT_H
-#define TLS_SERVER_CONTEXT_H
+#ifndef TLS_CLIENT_SESSION_HITLS_H
+#define TLS_CLIENT_SESSION_HITLS_H
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif // defined(HAVE_CONFIG_H)
 
-#ifdef WITH_EXAMPLE_QUICTLS
-#  include "tls_server_context_quictls.h"
-#endif // defined(WITH_EXAMPLE_QUICTLS)
+#include <filesystem>
 
-#ifdef WITH_EXAMPLE_GNUTLS
-#  include "tls_server_context_gnutls.h"
-#endif // defined(WITH_EXAMPLE_GNUTLS)
+#include "tls_session_base_hitls.h"
+#include "shared.h"
 
-#ifdef WITH_EXAMPLE_BORINGSSL
-#  include "tls_server_context_boringssl.h"
-#endif // defined(WITH_EXAMPLE_BORINGSSL)
+using namespace ngtcp2;
 
-#ifdef WITH_EXAMPLE_PICOTLS
-#  include "tls_server_context_picotls.h"
-#endif // defined(WITH_EXAMPLE_PICOTLS)
+class TLSClientContext;
+class ClientBase;
 
-#ifdef WITH_EXAMPLE_WOLFSSL
-#  include "tls_server_context_wolfssl.h"
-#endif // defined(WITH_EXAMPLE_WOLFSSL)
+class TLSClientSession : public TLSSessionBase {
+public:
+  TLSClientSession() = default;
 
-#ifdef WITH_EXAMPLE_OSSL
-#  include "tls_server_context_ossl.h"
-#endif // defined(WITH_EXAMPLE_OSSL)
+  std::expected<void, Error> init(bool &early_data_enabled,
+                                  const TLSClientContext &tls_ctx,
+                                  const char *remote_addr, ClientBase *client,
+                                  uint32_t quic_version, AppProtocol app_proto);
 
-#ifdef WITH_EXAMPLE_HITLS
-#  include "tls_server_config_hitls.h"
-#endif // defined(WITH_EXAMPLE_HITLS)
+  bool get_early_data_accepted() const;
+  bool get_ech_accepted() const { return false; }
+  std::expected<void, Error>
+  write_ech_config_list(const std::filesystem::path &path) const {
+    return {};
+  }
+};
 
-#endif // !defined(TLS_SERVER_CONTEXT_H)
+#endif // !defined(TLS_CLIENT_SESSION_HITLS_H)

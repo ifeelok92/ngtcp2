@@ -53,4 +53,8 @@
 #  include "tls_server_session_ossl.h"
 #endif // defined(WITH_EXAMPLE_OSSL)
 
+#ifdef WITH_EXAMPLE_HITLS
+#  include "tls_server_session_hitls.h"
+#endif // defined(WITH_EXAMPLE_HITLS)
+
 #endif // !defined(TLS_SERVER_SESSION_H)
